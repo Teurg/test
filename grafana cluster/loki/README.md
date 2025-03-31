@@ -19,7 +19,6 @@ x-def-logging: &default-logging
 
 <<: *default-logging
 
-А если это Api как с урока то:
 
 api:
 
