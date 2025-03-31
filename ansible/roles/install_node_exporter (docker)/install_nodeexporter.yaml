@@ -1,0 +1,5 @@
+- name: Install Node-Exporter
+  hosts: ub-test
+  become: yes
+  roles:
+    - install_node_exporter

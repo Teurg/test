@@ -1,0 +1,5 @@
+- name: Update and Upgrade Packages
+  hosts: all
+  become: yes
+  roles:
+    - update_upgrade

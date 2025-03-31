@@ -1,0 +1,5 @@
+- name: Install Docker for Ubuntu
+  hosts: ub-test2
+  become: yes
+  roles:
+    - monitoring-server

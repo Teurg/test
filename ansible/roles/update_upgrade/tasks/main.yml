@@ -1,0 +1,27 @@
+---
+# tasks/main.yml
+- name: Update package list
+  apt:
+    update_cache: yes
+  register: update_result
+  changed_when: update_result.cache_updated
+
+- name: Check if reboot is required
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_check
+
+- name: Upgrade all packages
+  apt:
+    upgrade: dist
+    autoremove: yes
+  register: upgrade_result
+
+- name: Notify if reboot is required
+  debug:
+    msg: "A reboot is required on {{ inventory_hostname }}!"
+  when: reboot_check.stat.exists
+
+- name: Clean up unused packages
+  apt:
+    autoclean: yes

@@ -1,0 +1,16 @@
+---
+# tasks file for install_node_exporter
+- name: Create monitoring dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /etc/monitoring
+
+- name: Copy files
+  copy:
+    src: etc/monitoring/
+    dest: /etc/monitoring/
+
+- name: Start server
+  command: docker compose -f /etc/monitoring/compose.yaml up -d

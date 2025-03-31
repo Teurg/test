@@ -1,0 +1,12 @@
+services:
+  postgres:
+    image: postgres
+    container_name: grafana-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+      - ./init-user-db.sh:/docker-entrypoint-initdb.d/init-user-db.sh
+    environment:
+      POSTGRES_PASSWORD: "${PG_PASS}"

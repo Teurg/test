@@ -1,0 +1,66 @@
+---
+# tasks file for install_postgresql
+- name: Install additional packages
+  apt:
+    name:
+      - gnupg2
+      - software-properties-common
+      - apt-transport-https
+      - python3-psycopg2
+      - acl
+    update_cache: yes
+
+- name: Add repo key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Add postgres repo
+  apt_repository:
+    state: present
+    repo: "deb https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    update_cache: yes
+    filename: postgresql
+
+- name: Install postgres
+  apt:
+    name: postgresql
+    state: present
+    update_cache: yes
+
+- name: Set listen addr
+  lineinfile:
+    path: /etc/postgresql/17/main/postgresql.conf
+    regexp: '^#listen_addresses'
+    line: "listen_addresses = '0.0.0.0'"
+  notify: restart postgres
+
+- name: Set access for backends
+  lineinfile:
+    path: /etc/postgresql/17/main/pg_hba.conf
+    line: "host all all 0.0.0.0/0 md5"
+    state: present
+  notify: restart postgres
+
+- name: Create user
+  become: true
+  become_user: postgres
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_pass }}"
+
+- name: Create db
+  become: true
+  become_user: postgres
+  postgresql_db:
+    name: "{{ db_name }}"
+    owner: "{{ db_user }}"
+
+- name: Grant privileges to user on database
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_privs:
+    db: "{{ db_name }}"
+    role: "{{ db_user }}"
+    privs: ALL
+    type: database

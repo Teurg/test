@@ -1,0 +1,7 @@
+---
+- name: Update Docker projects
+  hosts: ub-docker
+  become: yes
+  roles:
+    - docker_update
+

@@ -1,0 +1,5 @@
+- name: Install Postgresql
+  hosts: ub-test2
+  become: yes
+  roles:
+    - postgresql_docker

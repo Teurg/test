@@ -1,0 +1,6 @@
+---
+# vars file for install_postgresql
+db_user: goha
+db_pass: passwd
+db_name: grafana_bd
+pg_version: 17

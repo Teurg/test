@@ -1,0 +1,16 @@
+---
+# tasks file for monitoring-server
+- name: Create postgresql
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /opt/postgresql
+
+- name: Copy files
+  copy:
+    src: opt/postgresql/
+    dest: /opt/postgresql/
+
+- name: Start server
+  command: docker compose -f /opt/postgresql/compose.yaml up -d

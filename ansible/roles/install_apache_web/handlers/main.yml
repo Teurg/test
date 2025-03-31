@@ -1,0 +1,7 @@
+---
+# handlers file for delpoy_apache_web
+# Обработчик для перезапуска Apache
+- name: Restart Apache
+  service:
+    name: "{{ apache_service }}"
+    state: restarted

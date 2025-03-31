@@ -1,0 +1,15 @@
+---
+# defaults/main.yml
+docker_projects:
+  - diun
+  - gotify
+  - guacamole
+  - homarr
+  - jellyfin
+  - portainer
+  - traefik
+  - uptime-kuma
+  - vaultwarden
+  - wireguard
+  - monitoring
+

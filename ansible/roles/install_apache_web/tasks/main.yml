@@ -1,0 +1,27 @@
+---
+# tasks/main.yml
+- name: Ensure Apache is installed
+  apt:
+    name: "{{ apache_service }}"
+    state: latest
+  register: apache_install_result
+  changed_when: apache_service not in apache_install_result.stdout
+
+- name: Ensure destination directory exists
+  file:
+    path: "{{ destin_file | dirname }}"
+    state: directory
+    mode: '0755'
+
+- name: Deploy the web page
+  copy:
+    src: "{{ source_file }}"
+    dest: "{{ destin_file }}"
+    mode: '0644'
+  notify: Restart Apache
+
+- name: Ensure Apache is started and enabled
+  service:
+    name: "{{ apache_service }}"
+    state: started
+    enabled: yes

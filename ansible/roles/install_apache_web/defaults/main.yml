@@ -1,0 +1,5 @@
+---
+# defaults file for delpoy_apache_web
+source_file: "index.html"
+destin_file: "/var/www/html/index.html"
+apache_service: apache2

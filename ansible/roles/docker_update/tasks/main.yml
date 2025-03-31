@@ -1,0 +1,36 @@
+---
+# tasks/main.yml
+- name: Pull the latest images for each project
+  command: docker compose pull
+  args:
+    chdir: "/docker/{{ item }}/"
+  register: pull_result
+  loop: "{{ docker_projects }}"
+  changed_when: "pull_result.stdout_lines | select('search', 'Downloaded newer image') | list | length > 0"
+
+- name: Log updates for pulled images
+  debug:
+    msg: "Project {{ item.item }}: {{ 'Updated' if item.stdout is search('Downloaded newer image') else 'No updates' }}"
+  loop: "{{ pull_result.results }}"
+
+- name: Recreate and restart services for each project
+  command: docker compose up -d
+  args:
+    chdir: "/docker/{{ item }}/"
+  loop: "{{ docker_projects }}"
+  register: up_result
+  when: "pull_result.results | selectattr('stdout', 'search', 'Downloaded newer image') | list | length > 0"
+
+- name: Log restarted services
+  debug:
+    msg: "Project {{ item.item }}: Services restarted"
+  loop: "{{ up_result.results }}"
+  when: up_result.results is defined
+
+- name: Remove unused images
+  command: docker image prune -f
+  register: prune_result
+
+- name: Log unused image removal result
+  debug:
+    msg: "Image prune result: {{ prune_result.stdout }}"
